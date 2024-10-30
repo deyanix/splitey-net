@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Splitey.Api.Services.Payment.Settlement;
 
 namespace Splitey.Api.Controllers.Payment;
 
+[Authorize]
 public class SettlementController(SettlementService settlementService) : Controller
 {
     [HttpGet("/settlements/{id}/arrangement")]

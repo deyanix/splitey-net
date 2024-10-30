@@ -7,9 +7,45 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Dapper" Version="2.0.151" />
+        <PackageReference Include="BCrypt.Net-Next" Version="4.0.3"/>
+        <PackageReference Include="Dapper" Version="2.0.151"/>
+        <PackageReference Include="JWT" Version="10.1.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0-rc.1.23421.29" />
+        <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="8.0.0-rc.1.23421.29" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0-rc.1.23421.29"/>
-        <PackageReference Include="Npgsql" Version="8.0.0-preview.4" />
+        <PackageReference Include="Npgsql" Version="8.0.0-preview.4"/>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Update="Resources\Payment\Settlement\Sql.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>Sql.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <Compile Update="Resources\Payment\Settlement\Sql.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>Sql.resx</DependentUpon>
+        </Compile>
+        
+        <EmbeddedResource Update="Resources\User\User\Sql.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>Sql.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <Compile Update="Resources\User\User\Sql.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>Sql.resx</DependentUpon>
+        </Compile>
+        <Compile Remove="keys\**" />
+        <EmbeddedResource Remove="keys\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Remove="keys\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="keys\**" />
     </ItemGroup>
 </Project>
