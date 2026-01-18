@@ -42,9 +42,9 @@ public class SettlementRepository(SqlConnection sqlConnection) : BaseRepository(
         });
     }
     
-    public Task<IEnumerable<SettlementArrangementItem>> GetArrangement(int settlementId)
+    public Task<IEnumerable<SettlementDebtItem>> GetDebts(int settlementId)
     {
-        return Query<SettlementArrangementItem>(SqlQuery.GetArrangement, param: new
+        return Query<SettlementDebtItem>(SqlQuery.GetDebts, param: new
         {
             SettlementId = settlementId
         });

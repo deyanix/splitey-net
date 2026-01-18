@@ -1,6 +1,6 @@
 ﻿namespace Splitey.Models.Settlement.Settlement;
 
-public class SettlementArrangementItem
+public class SettlementDebtItem
 {
     public required int From { get; init; }
     public required int To { get; init; }

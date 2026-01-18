@@ -33,16 +33,4 @@ public class SettlementController(SettlementService settlementService) : Control
         await settlementService.Delete(id);
         return Ok();
     }
-    
-    [HttpGet("/settlements/{id:int}/arrangement")]
-    public async Task<IActionResult> GetArrangement([FromRoute] int id, [FromQuery] bool optimized)
-    {
-        return Ok(await settlementService.GetArrangement(id, optimized));
-    }
-
-    [HttpGet("/settlements/{id:int}/summary")]
-    public async Task<IActionResult> GetSummary([FromRoute] int id)
-    {
-        return Ok(await settlementService.GetSummary(id));
-    }
 }
