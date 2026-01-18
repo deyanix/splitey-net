@@ -22,6 +22,11 @@ public abstract class BaseRepository
         return await _sqlConnection.QueryFirstAsync<T>(query, param: param);
     } 
     
+    public async Task<T?> QueryFirstOrDefaultAsync<T>(string query, object? param)
+    {
+        return await _sqlConnection.QueryFirstOrDefaultAsync<T>(query, param: param);
+    } 
+    
     public async Task<int> Execute(string query, object? param)
     {
         return await _sqlConnection.ExecuteAsync(query, param: param);

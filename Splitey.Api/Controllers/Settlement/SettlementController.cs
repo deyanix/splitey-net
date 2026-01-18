@@ -34,12 +34,6 @@ public class SettlementController(SettlementService settlementService) : Control
         return Ok();
     }
     
-    [HttpGet("/settlements/{id:int}/members")]
-    public async Task<IActionResult> GetMembers([FromRoute] int id)
-    {
-        return Ok(await settlementService.GetMembers(id));
-    }
-    
     [HttpGet("/settlements/{id:int}/arrangement")]
     public async Task<IActionResult> GetArrangement([FromRoute] int id, [FromQuery] bool optimized)
     {

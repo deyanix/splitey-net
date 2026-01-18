@@ -12,6 +12,7 @@ namespace Splitey.Core.Services.Settlement.Settlement;
 [ScopedDependency]
 public class SettlementService(
     AuthorizationService authorizationService,
+    SettlementAccessorService settlementAccessorService,
     SettlementRepository settlementRepository,
     SettlementMemberRepository settlementMemberRepository)
 {
@@ -34,21 +35,13 @@ public class SettlementService(
     
     public async Task Update(int settlementId, SettlementUpdate request)
     {
-        var members = await settlementMemberRepository.GetList(settlementId);
-        var member = members.FirstOrDefault(x => x.UserId == authorizationService.UserId);
-        if (member == null || member.AccessModeId == AccessMode.FullAccess)
-            throw new Exception("Not authorized");
-        
+        await settlementAccessorService.EnsureAccess(settlementId, AccessMode.FullAccess);
         await settlementRepository.Update(settlementId, request);
     }
     
     public async Task Delete(int settlementId)
     {
-        var members = await settlementMemberRepository.GetList(settlementId);
-        var member = members.FirstOrDefault(x => x.UserId == authorizationService.UserId);
-        if (member == null || member.AccessModeId == AccessMode.FullAccess)
-            throw new Exception("Not authorized");
-        
+        await settlementAccessorService.EnsureAccess(settlementId, AccessMode.FullAccess);
         await settlementRepository.Delete(settlementId);
     }
     
@@ -93,15 +86,10 @@ public class SettlementService(
             .ToList();
     }
 
-    public async Task<IList<SettlementMemberItem>> GetMembers(int settlementId)
-    {
-        return (await settlementMemberRepository.GetList(settlementId)).ToList();
-    }
-
     public async Task<IList<SettlementSummaryItem>> GetSummary(int settlementId)
     {
         IList<SettlementArrangementItem> items = await GetArrangement(settlementId);
-        IList<SettlementMemberItem> members = await GetMembers(settlementId);
+        IEnumerable<SettlementMemberModel> members = await settlementMemberRepository.GetList(settlementId);
 
         return members
             .Select(member =>

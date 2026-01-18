@@ -28,6 +28,34 @@ public class SettlementMemberRepository(SqlConnection sqlConnection) : BaseRepos
     {
         return Merge(settlementId, contactId: contactId);
     }
+    
+    public Task<SettlementMemberItem?> GetUser(int settlementId, int userId)
+    {
+        return Get(settlementId, userId: userId);
+    }
+
+    public Task<SettlementMemberItem?> GetContact(int settlementId, int contactId)
+    {
+        return Get(settlementId, contactId: contactId);
+    }
+    
+    public Task<IEnumerable<SettlementMemberModel>> GetList(int settlementId)
+    {
+        return Query<SettlementMemberModel>(SqlQuery.GetList, param: new
+        {
+            SettlementId = settlementId
+        });
+    }
+
+    private Task<SettlementMemberItem?> Get(int settlementId, int? userId = null, int? contactId = null)
+    {
+        return QueryFirstOrDefaultAsync<SettlementMemberItem>(SqlQuery.Get, param: new
+        {
+            SettlementId = settlementId,
+            UserId = userId,
+            ContactId = contactId,
+        });
+    }
 
     private Task<int> Merge(int settlementId, int? userId = null, int? contactId = null, AccessMode? accessMode = null)
     {
@@ -37,14 +65,6 @@ public class SettlementMemberRepository(SqlConnection sqlConnection) : BaseRepos
             UserId = userId,
             ContactId = contactId,
             AccessModeId = (int?)accessMode,
-        });
-    }
-    
-    public Task<IEnumerable<SettlementMemberItem>> GetList(int settlementId)
-    {
-        return Query<SettlementMemberItem>(SqlQuery.GetList, param: new
-        {
-            SettlementId = settlementId
         });
     }
 }

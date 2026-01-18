@@ -1,7 +1,3 @@
-﻿UPDATE [settlement].[Settlement]
-SET
-    [Name] = @Name,
-    [Description] = @Description,
-    [CurrencyId] = @CurrencyId
+﻿DELETE FROM [settlement].[Settlement]
 WHERE
     [Id] = @SettlementId
