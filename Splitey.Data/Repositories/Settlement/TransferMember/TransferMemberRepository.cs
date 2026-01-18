@@ -1,0 +1,20 @@
+﻿using System.Text.Json;
+using Microsoft.Data.SqlClient;
+using Splitey.Data.Resources.Settlement.TransferMember;
+using Splitey.DependencyInjection.Attributes;
+using Splitey.Models.Settlement.TransferMember;
+
+namespace Splitey.Data.Repositories.Settlement.TransferMember;
+
+[SingletonDependency]
+public class TransferMemberRepository(SqlConnection sqlConnection) : BaseRepository(sqlConnection)
+{
+    public Task Merge(int transferId, IEnumerable<TransferMemberUpdate> transferMembers)
+    {
+        return Execute(SqlQuery.Merge, param: new
+        {
+            TransferId = transferId,
+            TransferMembers = JsonSerializer.Serialize(transferMembers),
+        });
+    }
+}

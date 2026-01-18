@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
@@ -51,7 +53,7 @@ namespace Splitey.SqlGenerator
                         : $"{rootNamespace}.{folderNamespace}";
 
                     var content = file.GetText()?.ToString() ?? string.Empty;
-                    var safeContent = content.Replace("\"", "\"\"");
+                    var safeContent = SanitizeSql(content).Replace("\"", "\"\"");
                     var propertyName = fileName.Replace(" ", "_").Replace("-", "_");
 
                     var code = $@"
@@ -76,6 +78,20 @@ Stack Trace:
                     spc.AddSource(errorName, SourceText.From(errorContent, Encoding.UTF8));
                 }
             });
+        }
+        
+        private static string SanitizeSql(string sql)
+        {
+            if (string.IsNullOrWhiteSpace(sql)) 
+                return string.Empty;
+
+            var noComments = Regex.Replace(sql, @"--.*$", "", RegexOptions.Multiline);
+
+            var lines = noComments.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(l => l.Trim())
+                .Where(l => !string.IsNullOrWhiteSpace(l));
+
+            return string.Join("\n", lines);
         }
     }
 }

@@ -8,6 +8,7 @@
   </Folder>
   <Folder Name="/Api/">
     <Project Path="Splitey.Api.Core/Splitey.Api.Core.csproj" />
+    <Project Path="Splitey.Api.Models/Splitey.Api.Models.csproj" />
     <Project Path="Splitey.Api/Splitey.Api.csproj" />
   </Folder>
   <Folder Name="/Utilities/">

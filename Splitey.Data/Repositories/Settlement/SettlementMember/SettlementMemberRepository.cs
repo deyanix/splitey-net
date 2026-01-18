@@ -9,6 +9,14 @@ namespace Splitey.Data.Repositories.Settlement.SettlementMember;
 [SingletonDependency]
 public class SettlementMemberRepository(SqlConnection sqlConnection) : BaseRepository(sqlConnection)
 {
+    public Task<IEnumerable<SettlementMemberModel>> GetList(int settlementId)
+    {
+        return Query<SettlementMemberModel>(SqlQuery.GetList, param: new
+        {
+            SettlementId = settlementId,
+        });
+    }
+    
     public Task UpsertUser(int settlementId, int userId, AccessMode accessMode)
     {
         return Merge(settlementId, userId: userId, accessMode: accessMode);
@@ -37,14 +45,6 @@ public class SettlementMemberRepository(SqlConnection sqlConnection) : BaseRepos
     public Task<SettlementMemberItem?> GetContact(int settlementId, int contactId)
     {
         return Get(settlementId, contactId: contactId);
-    }
-    
-    public Task<IEnumerable<SettlementMemberModel>> GetList(int settlementId)
-    {
-        return Query<SettlementMemberModel>(SqlQuery.GetList, param: new
-        {
-            SettlementId = settlementId
-        });
     }
 
     private Task<SettlementMemberItem?> Get(int settlementId, int? userId = null, int? contactId = null)

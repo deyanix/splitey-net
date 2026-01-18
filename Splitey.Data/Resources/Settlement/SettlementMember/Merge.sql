@@ -14,11 +14,15 @@ ON
     )
     
 WHEN MATCHED AND @AccessModeId IS NULL THEN
-    DELETE -- TODO cascade delete!
+DELETE
 
 WHEN MATCHED AND @AccessModeId IS NOT NULL THEN
-    UPDATE SET [AccessModeId] = @AccessModeId
+UPDATE 
+SET 
+    [AccessModeId] = @AccessModeId
 
 WHEN NOT MATCHED AND @AccessModeId IS NOT NULL THEN
-    INSERT ([SettlementId], [UserId], [ContactId], [AccessModeId])
-    VALUES (S.[SettlementId], S.[UserId], S.[ContactId], @AccessModeId);
+INSERT 
+    ([SettlementId], [UserId], [ContactId], [AccessModeId])
+VALUES 
+    (S.[SettlementId], S.[UserId], S.[ContactId], @AccessModeId);
