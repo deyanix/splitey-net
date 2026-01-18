@@ -11,13 +11,13 @@ public class UserRepository(NpgsqlConnection connection)
 {
     public async Task<UserModel?> Get(int id)
     {
-        return (await connection.QueryAsync<UserModel>(Sql.Get, param: new { UserId = id }))
+        return (await connection.QueryAsync<UserModel>(SqlQuery.Get, param: new { UserId = id }))
             .FirstOrDefault();
     }
     
     public async Task<UserModel?> GetByLogin(string login)
     {
-        return (await connection.QueryAsync<UserModel>(Sql.GetByLogin, param: new { Login = login }))
+        return (await connection.QueryAsync<UserModel>(SqlQuery.GetByLogin, param: new { Login = login }))
             .FirstOrDefault();
     }
 }

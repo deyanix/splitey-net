@@ -6,7 +6,7 @@ namespace Splitey.Api.Controllers.User;
 
 public class UserController(UserService userService) : Controller
 {
-    [HttpPost("user/login")]
+    [HttpPost("users/login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest data)
     {
         return Ok(await userService.Login(data));

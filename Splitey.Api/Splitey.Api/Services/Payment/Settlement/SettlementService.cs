@@ -1,4 +1,5 @@
 ﻿using Splitey.Api.Common.DependencyInjection.Attributes;
+using Splitey.Api.DataModels.Payment;
 using Splitey.Api.Models.Payment.Settlement;
 using Splitey.Api.Repositories.Payment.Settlement;
 
@@ -48,7 +49,7 @@ public class SettlementService(SettlementRepository settlementRepository)
             .ToList();
     }
 
-    public async Task<IList<SettlementMember>> GetMembers(int settlementId)
+    public async Task<IList<SettlementMemberModel>> GetMembers(int settlementId)
     {
         return (await settlementRepository.GetMembers(settlementId)).ToList();
     }
@@ -56,7 +57,7 @@ public class SettlementService(SettlementRepository settlementRepository)
     public async Task<IList<SettlementSummaryItem>> GetSummary(int settlementId)
     {
         IList<SettlementArrangementItem> items = await GetArrangement(settlementId);
-        IList<SettlementMember> members = await GetMembers(settlementId);
+        IList<SettlementMemberModel> members = await GetMembers(settlementId);
 
         return members
             .Select(member =>

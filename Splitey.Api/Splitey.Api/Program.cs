@@ -1,3 +1,4 @@
+using Dapper.FastCrud;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.OpenApi.Models;
 using Npgsql;
@@ -9,6 +10,7 @@ builder.Services.AddCors();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddProblemDetails();
 builder.Services.AddSwaggerGen(c =>
 {
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
@@ -47,6 +49,8 @@ builder.Services
             .Build();
     });
 builder.Services.RegisterServices();
+
+OrmConfiguration.DefaultDialect = SqlDialect.PostgreSql; 
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
