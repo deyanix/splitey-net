@@ -38,7 +38,7 @@
     
     <ItemGroup>
       <ProjectReference 
-          Include="..\..\Splitey.SqlGenerator\Splitey.SqlGenerator\Splitey.SqlGenerator.csproj" 
+          Include="..\Splitey.SqlGenerator\Splitey.SqlGenerator.csproj" 
           OutputItemType="Analyzer"
           ReferenceOutputAssembly="false" />
     </ItemGroup>
