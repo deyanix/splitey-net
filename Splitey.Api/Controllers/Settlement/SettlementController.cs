@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Splitey.Api.Models.Settlement.Settlement;
-using Splitey.Api.Services.Settlement.Settlement;
+using Splitey.Core.Services.Settlement.Settlement;
+using Splitey.Models.Settlement.Settlement;
 
 namespace Splitey.Api.Controllers.Settlement;
 

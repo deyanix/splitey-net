@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Splitey.Api.Models.User.User;
-using Splitey.Api.Services.User.User;
+using Splitey.Core.Services.User.User;
+using Splitey.Models.User.User;
 
 namespace Splitey.Api.Controllers.User;
 

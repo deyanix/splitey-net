@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.4" />
+        <PackageReference Include="Dapper.FastCrud" Version="3.3.2"/>
+    </ItemGroup>
+    
+    <ItemGroup>
+        <AdditionalFiles Include="Resources\**\*.sql" UpToDateCheckInput="true" />
+        <CompilerVisibleProperty Include="ProjectDir" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Splitey.DependencyInjection\Splitey.DependencyInjection.csproj" />
+        <ProjectReference Include="..\Splitey.Models\Splitey.Models.csproj" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <ProjectReference
+                Include="..\Splitey.SqlGenerator\Splitey.SqlGenerator.csproj"
+                OutputItemType="Analyzer"
+                ReferenceOutputAssembly="false" />
+    </ItemGroup>
+
+</Project>

@@ -1,8 +1,12 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.OpenApi.Models;
 using Microsoft.Data.SqlClient;
-using Splitey.Api.Common.Authorization;
-using Splitey.Api.Common.DependencyInjection;
+using Splitey.Authorization;
+using Splitey.Authorization.DependencyInjection;
+using Splitey.Core.DependencyInjection;
+using Splitey.Data;
+using Splitey.Data.DependencyInjection;
+using Splitey.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors();
@@ -34,6 +38,12 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
+
+builder.Services
+    .AddSpliteyData()
+    .AddSpliteyAuthorization()
+    .AddSpliteyApiCore();
+
 builder.Services.AddTransient(_ =>
     new SqlConnection(builder.Configuration.GetConnectionString("Default")));
 builder.Services
@@ -47,7 +57,6 @@ builder.Services
             .RequireAuthenticatedUser()
             .Build();
     });
-builder.Services.RegisterServices();
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())

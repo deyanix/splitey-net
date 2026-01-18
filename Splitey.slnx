@@ -1,0 +1,17 @@
+﻿<Solution>
+  <Folder Name="/Core/">
+    <Project Path="Splitey.Authorization/Splitey.Authorization.csproj" />
+  </Folder>
+  <Folder Name="/Data/">
+    <Project Path="Splitey.Data/Splitey.Data.csproj" />
+    <Project Path="Splitey.Models/Splitey.Models.csproj" />
+  </Folder>
+  <Folder Name="/Api/">
+    <Project Path="Splitey.Api.Core/Splitey.Api.Core.csproj" />
+    <Project Path="Splitey.Api/Splitey.Api.csproj" />
+  </Folder>
+  <Folder Name="/Utilities/">
+    <Project Path="Splitey.DependencyInjection/Splitey.DependencyInjection.csproj" />
+    <Project Path="Splitey.SqlGenerator/Splitey.SqlGenerator.csproj" />
+  </Folder>
+</Solution>

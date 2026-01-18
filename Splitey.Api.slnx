@@ -1,4 +1,0 @@
-﻿<Solution>
-  <Project Path="Splitey.SqlGenerator/Splitey.SqlGenerator.csproj" />
-  <Project Path="Splitey.Api/Splitey.Api.csproj" />
-</Solution>
