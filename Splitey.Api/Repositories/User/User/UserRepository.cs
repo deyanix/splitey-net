@@ -1,5 +1,5 @@
 ﻿using Dapper;
-using Npgsql;
+using Microsoft.Data.SqlClient;
 using Splitey.Api.Common.DependencyInjection.Attributes;
 using Splitey.Api.Models.User.User;
 using Splitey.Api.Resources.User.User;
@@ -7,7 +7,7 @@ using Splitey.Api.Resources.User.User;
 namespace Splitey.Api.Repositories.User.User;
 
 [SingletonDependency]
-public class UserRepository(NpgsqlConnection connection)
+public class UserRepository(SqlConnection connection)
 {
     public async Task<UserModel?> Get(int id)
     {

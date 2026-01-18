@@ -1,4 +1,4 @@
-﻿namespace Splitey.Api.Models.Payment.Settlement;
+﻿namespace Splitey.Api.Models.Settlement.Settlement;
 
 public class SettlementArrangementItem
 {

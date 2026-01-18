@@ -1,13 +1,58 @@
-﻿using Splitey.Api.Common.DependencyInjection.Attributes;
+﻿using Splitey.Api.Common.Database;
+using Splitey.Api.Common.DependencyInjection.Attributes;
 using Splitey.Api.DataModels.Payment;
-using Splitey.Api.Models.Payment.Settlement;
-using Splitey.Api.Repositories.Payment.Settlement;
+using Splitey.Api.Models.Settlement.Settlement;
+using Splitey.Api.Models.Settlement.SettlementMember;
+using Splitey.Api.Repositories.Settlement.Settlement;
+using Splitey.Api.Repositories.Settlement.SettlementMember;
+using Splitey.Api.Repositories.User;
+using Splitey.Api.Services.Authorization;
 
-namespace Splitey.Api.Services.Payment.Settlement;
+namespace Splitey.Api.Services.Settlement.Settlement;
 
-[SingletonDependency]
-public class SettlementService(SettlementRepository settlementRepository)
+[ScopedDependency]
+public class SettlementService(
+    AuthorizationService authorizationService,
+    SettlementRepository settlementRepository,
+    SettlementMemberRepository settlementMemberRepository)
 {
+    public Task<IEnumerable<SettlementItem>> GetList()
+    {
+        return settlementRepository.GetList(authorizationService.UserId);
+    }
+    
+    public async Task<int> Create(SettlementUpdate request)
+    {
+        using (var transaction = TransactionBuilder.Default)
+        {
+            int settlementId = await settlementRepository.Create(request);
+            await settlementMemberRepository.UpsertUser(settlementId, authorizationService.UserId, AccessMode.FullAccess);
+            transaction.Complete();
+            
+            return settlementId;
+        }
+    }
+    
+    public async Task Update(int settlementId, SettlementUpdate request)
+    {
+        var members = await settlementMemberRepository.GetList(settlementId);
+        var member = members.FirstOrDefault(x => x.UserId == authorizationService.UserId);
+        if (member == null || member.AccessModeId == AccessMode.FullAccess)
+            throw new Exception("Not authorized");
+        
+        await settlementRepository.Update(settlementId, request);
+    }
+    
+    public async Task Delete(int settlementId)
+    {
+        var members = await settlementMemberRepository.GetList(settlementId);
+        var member = members.FirstOrDefault(x => x.UserId == authorizationService.UserId);
+        if (member == null || member.AccessModeId == AccessMode.FullAccess)
+            throw new Exception("Not authorized");
+        
+        await settlementRepository.Delete(settlementId);
+    }
+    
     public Task<IList<SettlementArrangementItem>> GetArrangement(int settlementId, bool optimized)
     {
         return optimized ? GetOptimizedArrangement(settlementId) : GetArrangement(settlementId);
@@ -49,15 +94,15 @@ public class SettlementService(SettlementRepository settlementRepository)
             .ToList();
     }
 
-    public async Task<IList<SettlementMemberModel>> GetMembers(int settlementId)
+    public async Task<IList<SettlementMemberItem>> GetMembers(int settlementId)
     {
-        return (await settlementRepository.GetMembers(settlementId)).ToList();
+        return (await settlementMemberRepository.GetList(settlementId)).ToList();
     }
 
     public async Task<IList<SettlementSummaryItem>> GetSummary(int settlementId)
     {
         IList<SettlementArrangementItem> items = await GetArrangement(settlementId);
-        IList<SettlementMemberModel> members = await GetMembers(settlementId);
+        IList<SettlementMemberItem> members = await GetMembers(settlementId);
 
         return members
             .Select(member =>

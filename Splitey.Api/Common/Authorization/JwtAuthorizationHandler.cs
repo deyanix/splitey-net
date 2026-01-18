@@ -27,7 +27,11 @@ public class JwtAuthorizationHandler(IOptionsMonitor<AuthenticationSchemeOptions
                 UserModel? user = await userService.Get(userId.Value);
                 if (user != null)
                 {
-                    var claims = new[] { new Claim(ClaimTypes.Name, user.Username) };
+                    var claims = new[]
+                    {
+                        new Claim(ClaimTypes.Name, user.Username),
+                        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                    };
                     var principal = new ClaimsPrincipal(new ClaimsIdentity(claims, "Tokens"));
                     AuthenticationTicket ticket = new(principal, Scheme.Name);
                     return AuthenticateResult.Success(ticket);

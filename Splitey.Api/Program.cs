@@ -1,7 +1,6 @@
-using Dapper.FastCrud;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.OpenApi.Models;
-using Npgsql;
+using Microsoft.Data.SqlClient;
 using Splitey.Api.Common.Authorization;
 using Splitey.Api.Common.DependencyInjection;
 
@@ -36,7 +35,7 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 builder.Services.AddTransient(_ =>
-    new NpgsqlConnection(builder.Configuration.GetConnectionString("Default")));
+    new SqlConnection(builder.Configuration.GetConnectionString("Default")));
 builder.Services
     .AddAuthentication("JWT")
     .AddJwt();
@@ -50,13 +49,14 @@ builder.Services
     });
 builder.Services.RegisterServices();
 
-OrmConfiguration.DefaultDialect = SqlDialect.PostgreSql; 
-
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c => 
+    {
+        c.DefaultModelsExpandDepth(-1); 
+    });
 }
 app.UseHttpsRedirection();
 app.UseAuthorization();

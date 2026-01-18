@@ -7,13 +7,19 @@ public static class ServiceCollectionExtensions
 {
     public static void RegisterServices(this IServiceCollection services)
     {
-        Type singletonType = typeof(SingletonDependencyAttribute);
+        GetDependencies(typeof(SingletonDependencyAttribute))
+            .ForEach(item => services.AddSingleton(item.AsType()));
         
-        Assembly
+        GetDependencies(typeof(ScopedDependencyAttribute))
+            .ForEach(item => services.AddScoped(item.AsType()));
+    }
+
+    private static List<TypeInfo> GetDependencies(Type attributeType)
+    {
+        return Assembly
             .GetEntryAssembly()?.DefinedTypes
             .Where(item => item.IsClass)
-            .Where(item => item.IsDefined(singletonType, true))
-            .ToList()
-            .ForEach(item => services.AddSingleton(item.AsType()));
+            .Where(item => item.IsDefined(attributeType, true))
+            .ToList() ?? [];
     }
 }

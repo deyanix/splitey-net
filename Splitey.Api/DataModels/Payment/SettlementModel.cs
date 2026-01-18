@@ -1,9 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Splitey.Api.DataModels.Payment;
 
-[Table("Settlement", Schema = "payment")]
-public class SettlementModel : BaseModel
+[Table("Settlement", Schema = "settlement")]
+public class SettlementModel : IDataModel
 {
-    public required string Name { get; set; }
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public int? Id { get; set; }
+    
+    public string? Name { get; set; }
 }
