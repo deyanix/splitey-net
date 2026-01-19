@@ -12,19 +12,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Remove="keys\**" />
-        <EmbeddedResource Remove="keys\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Content Remove="keys\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <None Remove="keys\**" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\Splitey.Api.Core\Splitey.Api.Core.csproj" />
     </ItemGroup>
 </Project>

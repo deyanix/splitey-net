@@ -1,4 +1,4 @@
-﻿namespace Splitey.Models.Settlement.SettlementMember;
+﻿namespace Splitey.Api.Models.SettlementMember;
 
 public class SettlementMemberUpdateContact
 {

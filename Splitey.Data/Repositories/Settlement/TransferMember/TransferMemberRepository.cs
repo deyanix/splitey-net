@@ -9,7 +9,15 @@ namespace Splitey.Data.Repositories.Settlement.TransferMember;
 [SingletonDependency]
 public class TransferMemberRepository(SqlConnection sqlConnection) : BaseRepository(sqlConnection)
 {
-    public Task Merge(int transferId, IEnumerable<TransferMemberUpdate> transferMembers)
+    public Task<IEnumerable<TransferMemberDto>> GetList(int transferId)
+    {
+        return Query<TransferMemberDto>(SqlQuery.GetList, param: new
+        {
+            TransferId = transferId,
+        });
+    }
+    
+    public Task Merge(int transferId, IEnumerable<TransferMemberDto> transferMembers)
     {
         return Execute(SqlQuery.Merge, param: new
         {

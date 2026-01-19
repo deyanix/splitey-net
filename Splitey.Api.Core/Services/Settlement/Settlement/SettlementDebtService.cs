@@ -55,7 +55,7 @@ public class SettlementDebtService(
     public async Task<IList<SettlementSummaryItem>> GetSummary(int settlementId)
     {
         IList<SettlementDebtItem> items = await GetDebts(settlementId);
-        IEnumerable<SettlementMemberModel> members = await settlementMemberRepository.GetList(settlementId);
+        IEnumerable<SettlementMemberDto> members = await settlementMemberRepository.GetList(settlementId);
 
         return members
             .Select(member =>

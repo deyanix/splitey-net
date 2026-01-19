@@ -1,18 +1,18 @@
 ﻿using Splitey.Authorization;
-using Splitey.Data.Repositories.Settlement.SettlementMember;
+using Splitey.Data.Repositories.User.ContactAccess;
 using Splitey.DependencyInjection.Attributes;
 using Splitey.Models.User;
 
-namespace Splitey.Core.Services.Settlement.Settlement;
+namespace Splitey.Core.Services.User.Contact;
 
 [ScopedDependency]
-public class SettlementAccessorService(
+public class ContactAccessorService(
     AuthorizationService authorizationService,
-    SettlementMemberRepository settlementMemberRepository)
+    ContactAccessRepository contactAccessRepository)
 {
-    public async Task<AccessMode?> GetAccessMode(int settlementId)
+    public async Task<AccessMode?> GetAccessMode(int contactId)
     {
-        var member = await settlementMemberRepository.GetUser(settlementId, authorizationService.User.Id);
+        var member = await contactAccessRepository.Get(contactId, authorizationService.User.Id);
         return member?.AccessModeId;
     }
 

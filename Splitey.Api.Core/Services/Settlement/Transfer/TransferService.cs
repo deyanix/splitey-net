@@ -19,9 +19,45 @@ public class TransferService(
     TransferRepository transferRepository,
     TransferMemberRepository transferMemberRepository)
 {
-    public async Task<IEnumerable<TransferModel>> GetList(int settlementId)
+    public async Task<IEnumerable<TransferDto>> GetList(int settlementId)
     {
+        await settlementAccessorService.EnsureAccess(settlementId, AccessMode.ReadOnly);
         return await transferRepository.GetList(settlementId);
+    }
+
+    public async Task<TransferGetResponse> Get(int settlementId, int transferId)
+    {
+        var transferDto = await EnsureTransferAccess(settlementId, transferId, AccessMode.ReadOnly);
+        var transferMembers = await transferMemberRepository.GetList(transferId);
+        var settlementMembers = await settlementMemberRepository.GetList(settlementId);
+
+        return new TransferGetResponse()
+        {
+            Id = transferDto.Id,
+            Name = transferDto.Name,
+            Date = transferDto.Date,
+            PayerMemberId = transferDto.PayerMemberId,
+            TypeId = transferDto.TypeId,
+            DivisionModeId = transferDto.DivisionModeId,
+            TotalValue = transferDto.TotalValue,
+            CurrencyId = transferDto.CurrencyId,
+            Members = transferMembers
+                .Select(x =>
+                {
+                    var settlementMember = settlementMembers.FirstOrDefault(m => m.Id == x.MemberId)
+                        ?? throw new Exception("Not found transfer member");
+
+                    return new TransferUpdateMemberRequest()
+                    {
+                        MemberId = settlementMember.Id,
+                        MemberFirstName = settlementMember.FirstName,
+                        MemberLastName = settlementMember.LastName,
+                        Value = x.Value,
+                        Weight = x.Weight,
+                    };
+                })
+                .ToList(),
+        };
     }
     
     public async Task<int> Create(int settlementId, TransferUpdateRequest request)
@@ -42,15 +78,8 @@ public class TransferService(
     
     public async Task Update(int settlementId, int transferId, TransferUpdateRequest request)
     {
-        var transferGet = await transferRepository.Get(transferId);
-        if (transferGet == null)
-            throw new Exception("Transfer not exists");
-        
-        if (transferGet.SettlementId != settlementId)
-            throw new Exception("Incorrect settlement identifier");
-        
-        await settlementAccessorService.EnsureAccess(transferGet.SettlementId, AccessMode.ReadWrite);
-        await EnsureTransferMembers(transferGet.SettlementId, request);
+        var transferDto = await EnsureTransferAccess(settlementId, transferId, AccessMode.ReadWrite);
+        await EnsureTransferMembers(transferDto.SettlementId, request);
         
         var (transfer, transferMembers) = ParseTransferUpdate(request);
         using (var transaction = TransactionBuilder.Default)
@@ -63,15 +92,7 @@ public class TransferService(
 
     public async Task Delete(int settlementId, int transferId)
     {
-        var transferGet = await transferRepository.Get(transferId);
-        if (transferGet == null)
-            throw new Exception("Transfer not exists");
-        
-        if (transferGet.SettlementId != settlementId)
-            throw new Exception("Incorrect settlement identifier");
-        
-        await settlementAccessorService.EnsureAccess(transferGet.SettlementId, AccessMode.ReadWrite);
-        
+        await EnsureTransferAccess(settlementId, transferId, AccessMode.ReadWrite);
         await transferRepository.Delete(transferId);
     }
 
@@ -82,7 +103,20 @@ public class TransferService(
             throw new Exception("Selected a member outside the settlement");
     }
 
-    private (TransferUpdate, List<TransferMemberUpdate>) ParseTransferUpdate(TransferUpdateRequest request)
+    private async Task<TransferDto> EnsureTransferAccess(int settlementId, int transferId, AccessMode accessMode)
+    {
+        var transferDto = await transferRepository.Get(transferId);
+        if (transferDto == null)
+            throw new Exception("Transfer not exists");
+        
+        if (transferDto.SettlementId != settlementId)
+            throw new Exception("Incorrect settlement identifier");
+        
+        await settlementAccessorService.EnsureAccess(transferDto.SettlementId, accessMode);
+        return transferDto;
+    }
+
+    private (TransferUpdate, List<TransferMemberDto>) ParseTransferUpdate(TransferUpdateRequest request)
     {
         var transferMembers = BuildTransferUpdateMembers(request);
         var totalValue = transferMembers.Sum(x => x.Value);
@@ -108,7 +142,7 @@ public class TransferService(
         return (transferUpdate, transferMembers);
     }
 
-    private List<TransferMemberUpdate> BuildTransferUpdateMembers(TransferUpdateRequest request)
+    private List<TransferMemberDto> BuildTransferUpdateMembers(TransferUpdateRequest request)
     {
         var totalWeight = request.Members.Sum(x => x.Weight);
         
@@ -116,7 +150,7 @@ public class TransferService(
         {
             case DivisionMode.Amount:
                 return request.Members
-                    .Select(x => new TransferMemberUpdate()
+                    .Select(x => new TransferMemberDto()
                     {
                         MemberId = x.MemberId,
                         Value = x.Value,
@@ -125,7 +159,7 @@ public class TransferService(
                     .ToList();
             case DivisionMode.Percentage:
                 return request.Members
-                    .Select(x => new TransferMemberUpdate()
+                    .Select(x => new TransferMemberDto()
                     {
                         MemberId = x.MemberId,
                         Value = Math.Round(
@@ -137,7 +171,7 @@ public class TransferService(
                     .ToList();
             case DivisionMode.Proportionally:
                 return request.Members
-                    .Select(x => new TransferMemberUpdate()
+                    .Select(x => new TransferMemberDto()
                     {
                         MemberId = x.MemberId,
                         Value = Math.Round(

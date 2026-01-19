@@ -9,9 +9,9 @@ namespace Splitey.Data.Repositories.Settlement.SettlementMember;
 [SingletonDependency]
 public class SettlementMemberRepository(SqlConnection sqlConnection) : BaseRepository(sqlConnection)
 {
-    public Task<IEnumerable<SettlementMemberModel>> GetList(int settlementId)
+    public Task<IEnumerable<SettlementMemberDto>> GetList(int settlementId)
     {
-        return Query<SettlementMemberModel>(SqlQuery.GetList, param: new
+        return Query<SettlementMemberDto>(SqlQuery.GetList, param: new
         {
             SettlementId = settlementId,
         });

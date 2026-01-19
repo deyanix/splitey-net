@@ -14,6 +14,12 @@ public class TransferController(TransferService transferService) : Controller
         return Ok(await transferService.GetList(id));
     }
     
+    [HttpGet("/settlements/{id:int}/transfers/{transferId:int}")]
+    public async Task<IActionResult> Update([FromRoute] int id, [FromRoute] int transferId)
+    {
+        return Ok(await transferService.Get(id, transferId));
+    }
+    
     [HttpPost("/settlements/{id:int}/transfers")]
     public async Task<IActionResult> Create([FromRoute] int id, [FromBody] TransferUpdateRequest request)
     {

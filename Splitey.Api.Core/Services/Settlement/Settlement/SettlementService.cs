@@ -18,7 +18,7 @@ public class SettlementService(
 {
     public Task<IEnumerable<SettlementItem>> GetList()
     {
-        return settlementRepository.GetList(authorizationService.UserId);
+        return settlementRepository.GetList(authorizationService.User.Id);
     }
     
     public async Task<int> Create(SettlementUpdate request)
@@ -26,7 +26,7 @@ public class SettlementService(
         using (var transaction = TransactionBuilder.Default)
         {
             int settlementId = await settlementRepository.Create(request);
-            await settlementMemberRepository.UpsertUser(settlementId, authorizationService.UserId, AccessMode.FullAccess);
+            await settlementMemberRepository.UpsertUser(settlementId, authorizationService.User.Id, AccessMode.FullAccess);
             transaction.Complete();
             
             return settlementId;

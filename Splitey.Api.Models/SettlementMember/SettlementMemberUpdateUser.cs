@@ -1,9 +1,9 @@
 ﻿using Splitey.Models.User;
 
-namespace Splitey.Models.Settlement.SettlementMember;
+namespace Splitey.Api.Models.SettlementMember;
 
 public class SettlementMemberUpdateUser
 {
     public required int UserId { get; init; }
-    public required AccessMode AccessMode { get; init; }
+    public required AccessMode AccessModeId { get; init; }
 }

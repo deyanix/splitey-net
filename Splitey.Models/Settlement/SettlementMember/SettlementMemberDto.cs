@@ -2,7 +2,7 @@
 
 namespace Splitey.Models.Settlement.SettlementMember;
 
-public class SettlementMemberModel
+public class SettlementMemberDto
 {
     public required int Id { get; init; }
     public required int? UserId { get; init; }

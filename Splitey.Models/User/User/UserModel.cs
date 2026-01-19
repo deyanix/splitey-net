@@ -1,6 +1,8 @@
-﻿namespace Splitey.Models.User.User;
+﻿using Splitey.Models.Authorization;
 
-public class UserModel
+namespace Splitey.Models.User.User;
+
+public class UserModel : IUserContext
 {
     public required int Id { get; init; }
     public required string Username { get; init; }

@@ -1,12 +1,8 @@
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Data.SqlClient;
-using Splitey.Authorization;
 using Splitey.Authorization.DependencyInjection;
 using Splitey.Core.DependencyInjection;
-using Splitey.Data;
 using Splitey.Data.DependencyInjection;
-using Splitey.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors();
@@ -14,30 +10,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddProblemDetails();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
-    {
-        Name = "Authorization",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer",
-    });
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            new List<string>()
-        }
-    });
-});
+builder.Services.AddSwaggerGen();
 
 builder.Services
     .AddSpliteyData()
@@ -46,16 +19,21 @@ builder.Services
 
 builder.Services.AddTransient(_ =>
     new SqlConnection(builder.Configuration.GetConnectionString("Default")));
-builder.Services
-    .AddAuthentication("JWT")
-    .AddJwt();
-builder.Services
-    .AddAuthorization(options =>
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
     {
-        options.DefaultPolicy = new AuthorizationPolicyBuilder()
-            .AddAuthenticationSchemes("JWT")
-            .RequireAuthenticatedUser()
-            .Build();
+        options.Cookie.Name = "Splitey.Session";
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        options.Cookie.SameSite = SameSiteMode.Strict;
+        options.SlidingExpiration = true;
+        options.ExpireTimeSpan = TimeSpan.FromDays(7);
+        options.Events.OnRedirectToLogin = context =>
+        {
+            context.Response.StatusCode = 401;
+            return Task.CompletedTask;
+        };
     });
 
 var app = builder.Build();
@@ -67,7 +45,12 @@ if (app.Environment.IsDevelopment())
         c.DefaultModelsExpandDepth(-1); 
     });
 }
-app.UseHttpsRedirection();
+else
+{
+    app.UseHttpsRedirection();
+}
+
+app.UseAuthentication(); 
 app.UseAuthorization();
 app.MapControllers();
 

@@ -8,17 +8,17 @@ namespace Splitey.Data.Repositories.Settlement.Transfer;
 [SingletonDependency]
 public class TransferRepository(SqlConnection sqlConnection) : BaseRepository(sqlConnection)
 {
-    public Task<IEnumerable<TransferModel>> GetList(int settlementId)
+    public Task<IEnumerable<TransferDto>> GetList(int settlementId)
     {
-        return Query<TransferModel>(SqlQuery.GetList, param: new
+        return Query<TransferDto>(SqlQuery.GetList, param: new
         {
             SettlementId = settlementId,
         });
     }
     
-    public Task<TransferModel> Get(int transferId)
+    public Task<TransferDto> Get(int transferId)
     {
-        return QueryFirst<TransferModel>(SqlQuery.Get, param: new
+        return QueryFirst<TransferDto>(SqlQuery.Get, param: new
         {
             TransferId = transferId,
         });

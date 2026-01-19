@@ -1,6 +1,6 @@
 ﻿namespace Splitey.Api.Models.Transfer;
 
-public class TransferMemberUpdateRequest
+public class TransferGetMemberResponse
 {
     public required int MemberId { get; set; }
     public required decimal Value { get; set; }

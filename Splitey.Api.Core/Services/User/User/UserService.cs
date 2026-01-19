@@ -1,12 +1,15 @@
-﻿using Splitey.Authorization;
+﻿using Splitey.Api.Models.User;
+using Splitey.Authorization;
 using Splitey.Data.Repositories.User.User;
 using Splitey.DependencyInjection.Attributes;
 using Splitey.Models.User.User;
 
 namespace Splitey.Core.Services.User.User;
 
-[SingletonDependency]
-public class UserService(UserRepository userRepository, JwtService jwtService)
+[ScopedDependency]
+public class UserService(
+    UserRepository userRepository, 
+    AuthorizationService authorizationService)
 {
     public Task<UserModel?> Get(int id)
     {
@@ -18,14 +21,19 @@ public class UserService(UserRepository userRepository, JwtService jwtService)
         return userRepository.GetByLogin(login);
     }
 
-    public async Task<string?> Login(LoginRequest data)
+    public async Task Login(LoginRequest data)
     {
         UserModel? user = await GetByLogin(data.Login);
         if (user == null || !BCrypt.Net.BCrypt.Verify(data.Password, user.Password))
         {
-            return null;
+            return;
         }
 
-        return jwtService.GenerateToken(user);
+        await authorizationService.SignIn(user, data.RememberMe);
+    }
+
+    public async Task Logout()
+    {
+        await authorizationService.SignOut();
     }
 }

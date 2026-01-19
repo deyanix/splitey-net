@@ -1,4 +1,5 @@
-﻿using Splitey.Authorization;
+﻿using Splitey.Api.Models.SettlementMember;
+using Splitey.Authorization;
 using Splitey.Core.Services.Settlement.Settlement;
 using Splitey.Data.Repositories.Settlement.SettlementMember;
 using Splitey.DependencyInjection.Attributes;
@@ -12,7 +13,7 @@ public class SettlementMemberService(
     SettlementAccessorService settlementAccessorService,
     SettlementMemberRepository settlementMemberRepository) 
 {
-    public async Task<IEnumerable<SettlementMemberModel>> GetList(int settlementId)
+    public async Task<IEnumerable<SettlementMemberDto>> GetList(int settlementId)
     {
         await settlementAccessorService.EnsureAccess(settlementId, AccessMode.ReadOnly);
         return await settlementMemberRepository.GetList(settlementId);
@@ -21,7 +22,7 @@ public class SettlementMemberService(
     public async Task UpsertUser(int settlementId, SettlementMemberUpdateUser request)
     {
         await settlementAccessorService.EnsureAccess(settlementId, AccessMode.FullAccess);
-        await settlementMemberRepository.UpsertUser(settlementId, request.UserId, request.AccessMode);
+        await settlementMemberRepository.UpsertUser(settlementId, request.UserId, request.AccessModeId);
     }
 
     public async Task UpsertContact(int settlementId, SettlementMemberUpdateContact request)

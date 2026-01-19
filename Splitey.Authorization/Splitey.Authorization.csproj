@@ -8,14 +8,15 @@
     
     <ItemGroup>
         <PackageReference Include="BCrypt.Net-Next" Version="4.0.3"/>
-        <PackageReference Include="JWT" Version="11.0.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.23" />
-        <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="8.0.23" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.Abstractions" Version="2.3.9" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.3.9" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.Core" Version="2.3.9" />
         <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.9" />
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.3" />
     </ItemGroup>
     
     <ItemGroup>
-      <ProjectReference Include="..\Splitey.Data\Splitey.Data.csproj" />
+      <ProjectReference Include="..\Splitey.DependencyInjection\Splitey.DependencyInjection.csproj" />
+      <ProjectReference Include="..\Splitey.Models\Splitey.Models.csproj" />
     </ItemGroup>
 </Project>
