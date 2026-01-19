@@ -1,5 +1,4 @@
 ﻿using Splitey.Api.Models.SettlementMember;
-using Splitey.Authorization;
 using Splitey.Core.Services.Settlement.Settlement;
 using Splitey.Data.Repositories.Settlement.SettlementMember;
 using Splitey.DependencyInjection.Attributes;

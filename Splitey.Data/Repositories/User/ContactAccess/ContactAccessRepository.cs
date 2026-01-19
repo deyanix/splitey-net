@@ -1,5 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
-using Splitey.Data.Resources.User.ContactAccess;
+﻿using Splitey.Data.Resources.User.ContactAccess;
+using Splitey.Data.Sql;
 using Splitey.DependencyInjection.Attributes;
 using Splitey.Models.User;
 using Splitey.Models.User.ContactAccess;
@@ -7,7 +7,7 @@ using Splitey.Models.User.ContactAccess;
 namespace Splitey.Data.Repositories.User.ContactAccess;
 
 [SingletonDependency]
-public class ContactAccessRepository(SqlConnection sqlConnection) : BaseRepository(sqlConnection)
+public class ContactAccessRepository(ISqlConnectionFactory sqlConnectionFactory) : BaseRepository(sqlConnectionFactory)
 {
     public Task<IEnumerable<ContactAccessDto>> GetList(int contactId)
     {
@@ -19,7 +19,7 @@ public class ContactAccessRepository(SqlConnection sqlConnection) : BaseReposito
     
     public Task<ContactAccessDto?> Get(int contactId, int userId)
     {
-        return QueryFirstOrDefaultAsync<ContactAccessDto>(SqlQuery.Get, param: new
+        return QueryFirstOrDefault<ContactAccessDto>(SqlQuery.Get, param: new
         {
             ContactId = contactId,
             UserId = userId,

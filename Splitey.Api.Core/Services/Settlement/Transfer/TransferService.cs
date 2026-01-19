@@ -47,7 +47,7 @@ public class TransferService(
                     var settlementMember = settlementMembers.FirstOrDefault(m => m.Id == x.MemberId)
                         ?? throw new Exception("Not found transfer member");
 
-                    return new TransferUpdateMemberRequest()
+                    return new TransferGetMemberResponse()
                     {
                         MemberId = settlementMember.Id,
                         MemberFirstName = settlementMember.FirstName,

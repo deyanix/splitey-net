@@ -14,6 +14,12 @@ public class SettlementController(SettlementService settlementService) : Control
         return Ok(await settlementService.GetList());
     }
     
+    [HttpGet("/settlements/{id:int}")]
+    public async Task<IActionResult> GetList([FromRoute] int id)
+    {
+        return Ok(await settlementService.Get(id));
+    }
+    
     [HttpPost("/settlements")]
     public async Task<IActionResult> Create([FromBody] SettlementUpdate request)
     {

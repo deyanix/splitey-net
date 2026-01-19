@@ -4,7 +4,6 @@ using Splitey.Data.Repositories.Settlement.SettlementMember;
 using Splitey.Data.Transaction;
 using Splitey.DependencyInjection.Attributes;
 using Splitey.Models.Settlement.Settlement;
-using Splitey.Models.Settlement.SettlementMember;
 using Splitey.Models.User;
 
 namespace Splitey.Core.Services.Settlement.Settlement;
@@ -19,6 +18,11 @@ public class SettlementService(
     public Task<IEnumerable<SettlementItem>> GetList()
     {
         return settlementRepository.GetList(authorizationService.User.Id);
+    }
+    
+    public Task<SettlementItem> Get(int id)
+    {
+        return settlementRepository.Get(id);
     }
     
     public async Task<int> Create(SettlementUpdate request)

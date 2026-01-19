@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.Data.SqlClient;
 using Splitey.Authorization.DependencyInjection;
 using Splitey.Core.DependencyInjection;
 using Splitey.Data.DependencyInjection;
@@ -13,12 +12,21 @@ builder.Services.AddProblemDetails();
 builder.Services.AddSwaggerGen();
 
 builder.Services
-    .AddSpliteyData()
+    .AddSpliteyData(builder.Configuration.GetConnectionString("Default"))
     .AddSpliteyAuthorization()
     .AddSpliteyApiCore();
 
-builder.Services.AddTransient(_ =>
-    new SqlConnection(builder.Configuration.GetConnectionString("Default")));
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllWithCredentials", policy =>
+    {
+        policy.SetIsOriginAllowed(origin => true) // Trik: akceptuje każdy origin dynamicznie
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials(); // Wymagane, aby Cookie autoryzacyjne działało
+    });
+});
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
@@ -50,6 +58,7 @@ else
     app.UseHttpsRedirection();
 }
 
+app.UseCors("AllowAllWithCredentials");
 app.UseAuthentication(); 
 app.UseAuthorization();
 app.MapControllers();

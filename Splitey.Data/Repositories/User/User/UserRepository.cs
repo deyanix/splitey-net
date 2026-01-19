@@ -1,23 +1,20 @@
-﻿using Dapper;
-using Microsoft.Data.SqlClient;
-using Splitey.Data.Resources.User.User;
+﻿using Splitey.Data.Resources.User.User;
+using Splitey.Data.Sql;
 using Splitey.DependencyInjection.Attributes;
 using Splitey.Models.User.User;
 
 namespace Splitey.Data.Repositories.User.User;
 
 [SingletonDependency]
-public class UserRepository(SqlConnection connection)
+public class UserRepository(ISqlConnectionFactory sqlConnectionFactory) : BaseRepository(sqlConnectionFactory)
 {
-    public async Task<UserModel?> Get(int id)
+    public Task<UserDto?> Get(int id)
     {
-        return (await connection.QueryAsync<UserModel>(SqlQuery.Get, param: new { UserId = id }))
-            .FirstOrDefault();
+        return QueryFirstOrDefault<UserDto>(SqlQuery.Get, param: new { UserId = id });
     }
     
-    public async Task<UserModel?> GetByLogin(string login)
+    public Task<UserDto?> GetByLogin(string login)
     {
-        return (await connection.QueryAsync<UserModel>(SqlQuery.GetByLogin, param: new { Login = login }))
-            .FirstOrDefault();
+        return QueryFirstOrDefault<UserDto>(SqlQuery.GetByLogin, param: new { Login = login });
     }
 }

@@ -1,5 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
-using Splitey.Data.Resources.Settlement.SettlementMember;
+﻿using Splitey.Data.Resources.Settlement.SettlementMember;
+using Splitey.Data.Sql;
 using Splitey.DependencyInjection.Attributes;
 using Splitey.Models.Settlement.SettlementMember;
 using Splitey.Models.User;
@@ -7,7 +7,7 @@ using Splitey.Models.User;
 namespace Splitey.Data.Repositories.Settlement.SettlementMember;
 
 [SingletonDependency]
-public class SettlementMemberRepository(SqlConnection sqlConnection) : BaseRepository(sqlConnection)
+public class SettlementMemberRepository(ISqlConnectionFactory sqlConnectionFactory) : BaseRepository(sqlConnectionFactory)
 {
     public Task<IEnumerable<SettlementMemberDto>> GetList(int settlementId)
     {
@@ -49,7 +49,7 @@ public class SettlementMemberRepository(SqlConnection sqlConnection) : BaseRepos
 
     private Task<SettlementMemberItem?> Get(int settlementId, int? userId = null, int? contactId = null)
     {
-        return QueryFirstOrDefaultAsync<SettlementMemberItem>(SqlQuery.Get, param: new
+        return QueryFirstOrDefault<SettlementMemberItem>(SqlQuery.Get, param: new
         {
             SettlementId = settlementId,
             UserId = userId,

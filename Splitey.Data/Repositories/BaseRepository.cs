@@ -1,34 +1,38 @@
 ﻿using Dapper;
-using Microsoft.Data.SqlClient;
+using Splitey.Data.Sql;
 
 namespace Splitey.Data.Repositories;
 
 public abstract class BaseRepository
 {
-    private readonly SqlConnection _sqlConnection;
+    private readonly ISqlConnectionFactory _sqlConnectionFactory;
 
-    protected BaseRepository(SqlConnection sqlConnection)
+    protected BaseRepository(ISqlConnectionFactory sqlConnectionFactory)
     {
-        _sqlConnection = sqlConnection;
+        _sqlConnectionFactory = sqlConnectionFactory;
     }
     
-    public async Task<IEnumerable<T>> Query<T>(string query, object? param)
+    public async Task<IEnumerable<T>> Query<T>(string query, object? param = null)
     {
-        return await _sqlConnection.QueryAsync<T>(query, param: param);
+        using var connection = _sqlConnectionFactory.Create();
+        return await connection.QueryAsync<T>(query, param: param);
     } 
     
-    public async Task<T> QueryFirst<T>(string query, object? param)
+    public async Task<T> QueryFirst<T>(string query, object? param = null)
     {
-        return await _sqlConnection.QueryFirstAsync<T>(query, param: param);
+        using var connection = _sqlConnectionFactory.Create();
+        return await connection.QueryFirstAsync<T>(query, param: param);
     } 
     
-    public async Task<T?> QueryFirstOrDefaultAsync<T>(string query, object? param)
+    public async Task<T?> QueryFirstOrDefault<T>(string query, object? param = null)
     {
-        return await _sqlConnection.QueryFirstOrDefaultAsync<T>(query, param: param);
+        using var connection = _sqlConnectionFactory.Create();
+        return await connection.QueryFirstOrDefaultAsync<T>(query, param: param);
     } 
     
-    public async Task<int> Execute(string query, object? param)
+    public async Task<int> Execute(string query, object? param = null)
     {
-        return await _sqlConnection.ExecuteAsync(query, param: param);
+        using var connection = _sqlConnectionFactory.Create();
+        return await connection.ExecuteAsync(query, param: param);
     } 
 }

@@ -1,12 +1,12 @@
-﻿using Microsoft.Data.SqlClient;
-using Splitey.Data.Resources.Settlement.Transfer;
+﻿using Splitey.Data.Resources.Settlement.Transfer;
+using Splitey.Data.Sql;
 using Splitey.DependencyInjection.Attributes;
 using Splitey.Models.Settlement.Transfer;
 
 namespace Splitey.Data.Repositories.Settlement.Transfer;
 
 [SingletonDependency]
-public class TransferRepository(SqlConnection sqlConnection) : BaseRepository(sqlConnection)
+public class TransferRepository(ISqlConnectionFactory sqlConnectionFactory) : BaseRepository(sqlConnectionFactory)
 {
     public Task<IEnumerable<TransferDto>> GetList(int settlementId)
     {

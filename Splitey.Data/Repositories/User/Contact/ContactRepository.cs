@@ -1,12 +1,12 @@
-﻿using Microsoft.Data.SqlClient;
-using Splitey.Data.Resources.User.Contact;
+﻿using Splitey.Data.Resources.User.Contact;
+using Splitey.Data.Sql;
 using Splitey.DependencyInjection.Attributes;
 using Splitey.Models.User.Contact;
 
 namespace Splitey.Data.Repositories.User.Contact;
 
 [SingletonDependency]
-public class ContactRepository(SqlConnection sqlConnection) : BaseRepository(sqlConnection)
+public class ContactRepository(ISqlConnectionFactory sqlConnectionFactory) : BaseRepository(sqlConnectionFactory)
 {
     public Task<IEnumerable<ContactDto>> GetList(int userId)
     {

@@ -12,5 +12,5 @@ public class TransferGetResponse
     public required DivisionMode DivisionModeId { get; init; }
     public required decimal TotalValue { get; init; }
     public required int CurrencyId { get; init; }
-    public required IEnumerable<TransferUpdateMemberRequest> Members { get; init; }
+    public required IEnumerable<TransferGetMemberResponse> Members { get; init; }
 }
