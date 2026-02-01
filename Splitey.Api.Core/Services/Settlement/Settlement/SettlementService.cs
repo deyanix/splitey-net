@@ -1,6 +1,7 @@
 ﻿using Splitey.Authorization;
 using Splitey.Data.Repositories.Settlement.Settlement;
 using Splitey.Data.Repositories.Settlement.SettlementMember;
+using Splitey.Data.Repositories.Settlement.Transfer;
 using Splitey.Data.Transaction;
 using Splitey.DependencyInjection.Attributes;
 using Splitey.Models.Settlement.Settlement;
@@ -13,16 +14,20 @@ public class SettlementService(
     AuthorizationService authorizationService,
     SettlementAccessorService settlementAccessorService,
     SettlementRepository settlementRepository,
-    SettlementMemberRepository settlementMemberRepository)
+    SettlementMemberRepository settlementMemberRepository,
+    TransferRepository transferRepository)
 {
     public Task<IEnumerable<SettlementItem>> GetList()
     {
         return settlementRepository.GetList(authorizationService.User.Id);
     }
     
-    public Task<SettlementItem> Get(int id)
+    public async Task<SettlementItem> Get(int id)
     {
-        return settlementRepository.Get(id);
+        await settlementAccessorService.EnsureAccess(id, AccessMode.ReadOnly);
+        var settlement = await settlementRepository.Get(id);
+        settlement.AccessModeId = (int?) await settlementAccessorService.GetAccessMode(id);
+        return settlement;
     }
     
     public async Task<int> Create(SettlementUpdate request)
@@ -46,7 +51,12 @@ public class SettlementService(
     public async Task Delete(int settlementId)
     {
         await settlementAccessorService.EnsureAccess(settlementId, AccessMode.FullAccess);
-        await settlementRepository.Delete(settlementId);
+        using (var transaction = TransactionBuilder.Default)
+        {
+            await transferRepository.DeleteBySettlement(settlementId);
+            await settlementRepository.Delete(settlementId);
+            transaction.Complete();
+        }
     }
     
     

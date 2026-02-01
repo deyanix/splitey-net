@@ -48,4 +48,9 @@ public class UserService(
 
         return UserGetResponse.FromDto(user);
     }
+
+    public async Task<IEnumerable<UserItem>> GetList()
+    {
+        return await userRepository.GetList();
+    }
 }

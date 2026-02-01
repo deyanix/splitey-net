@@ -61,4 +61,12 @@ public class TransferRepository(ISqlConnectionFactory sqlConnectionFactory) : Ba
             TransferId = transferId,
         });
     }
+    
+    public Task DeleteBySettlement(int settlementId)
+    {
+        return Execute(SqlQuery.DeleteBySettlement, param: new
+        {
+            SettlementId = settlementId,
+        });
+    }
 }

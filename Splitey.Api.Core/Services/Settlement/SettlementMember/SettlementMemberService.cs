@@ -21,6 +21,7 @@ public class SettlementMemberService(
     public async Task UpsertUser(int settlementId, SettlementMemberUpdateUser request)
     {
         await settlementAccessorService.EnsureAccess(settlementId, AccessMode.FullAccess);
+        await EnsureNonEmpty(settlementId, request.UserId, request.AccessModeId);
         await settlementMemberRepository.UpsertUser(settlementId, request.UserId, request.AccessModeId);
     }
 
@@ -33,6 +34,7 @@ public class SettlementMemberService(
     public async Task DeleteUser(int settlementId, SettlementMemberDeleteUser request)
     {
         await settlementAccessorService.EnsureAccess(settlementId, AccessMode.FullAccess);
+        await EnsureNonEmpty(settlementId, request.UserId, null);
         await settlementMemberRepository.DeleteUser(settlementId, request.UserId);
     }
 
@@ -40,5 +42,19 @@ public class SettlementMemberService(
     {
         await settlementAccessorService.EnsureAccess(settlementId, AccessMode.FullAccess);
         await settlementMemberRepository.DeleteContact(settlementId, request.ContactId);
+    }
+
+    private async Task EnsureNonEmpty(int settlementId, int userId, AccessMode? accessMode)
+    {
+        var userMembers = (await settlementMemberRepository.GetList(settlementId))
+            .Where(x => x.UserId.HasValue)
+            .Where(x => x.UserId != userId)
+            .ToList();
+        
+        if (accessMode == null && userMembers.Count == 0)
+            throw new Exception("Not found other user");
+        
+        if (accessMode != AccessMode.FullAccess && !userMembers.Any(x => x.AccessModeId == AccessMode.FullAccess))
+            throw new Exception("Not found other user with full-access");
     }
 }

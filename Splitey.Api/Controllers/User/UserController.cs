@@ -27,4 +27,11 @@ public class UserController(UserService userService) : Controller
     {
         return Ok(await userService.GetCurrent());
     }
+    
+    [Authorize]
+    [HttpGet("users")]
+    public async Task<IActionResult> GetList()
+    {
+        return Ok(await userService.GetList());
+    }
 }

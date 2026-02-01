@@ -3,7 +3,8 @@
     S.[Name],
     S.[Description],
     C.[Id] AS CurrencyId,
-    C.[Code] AS CurrencyCode
+    C.[Code] AS CurrencyCode,
+    SM.[AccessModeId]
 FROM [settlement].[Settlement] S
 JOIN [settlement].[SettlementMember] SM 
     ON S.Id = SM.SettlementId

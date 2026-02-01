@@ -7,4 +7,5 @@ public class SettlementItem
     public required string? Description { get; init; }
     public required int CurrencyId { get; init; }
     public required string CurrencyCode { get; init; }
+    public int? AccessModeId { get; set; }
 }

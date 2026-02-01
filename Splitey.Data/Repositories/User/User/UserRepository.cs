@@ -17,4 +17,9 @@ public class UserRepository(ISqlConnectionFactory sqlConnectionFactory) : BaseRe
     {
         return QueryFirstOrDefault<UserDto>(SqlQuery.GetByLogin, param: new { Login = login });
     }
+    
+    public Task<IEnumerable<UserItem>> GetList()
+    {
+        return Query<UserItem>(SqlQuery.GetList);
+    }
 }

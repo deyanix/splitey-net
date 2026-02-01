@@ -118,15 +118,15 @@ public class TransferService(
 
     private (TransferUpdate, List<TransferMemberDto>) ParseTransferUpdate(TransferUpdateRequest request)
     {
-        var transferMembers = BuildTransferUpdateMembers(request);
+        var transferMembers = request.Members
+            .Select(x => new TransferMemberDto()
+            {
+                MemberId = x.MemberId,
+                Value = x.Value,
+                Weight = x.Weight,
+            })
+            .ToList();
         var totalValue = transferMembers.Sum(x => x.Value);
-
-        if (totalValue != request.TotalValue)
-            throw new Exception("Incorrect total value");
-
-        var updatesZip = transferMembers.Zip(request.Members);
-        if (updatesZip.Any(x => x.First.Value != x.Second.Value))
-            throw new Exception("Incorrect member values");
 
         var transferUpdate = new TransferUpdate()
         {
