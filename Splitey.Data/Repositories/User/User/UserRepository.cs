@@ -5,8 +5,8 @@ using Splitey.Models.User.User;
 
 namespace Splitey.Data.Repositories.User.User;
 
-[SingletonDependency]
-public class UserRepository(ISqlConnectionFactory sqlConnectionFactory) : BaseRepository(sqlConnectionFactory)
+[Singleton]
+public class UserRepository(ISqlConnectionFactory sqlConnectionFactory) : BaseRepository(sqlConnectionFactory), IUserRepository
 {
     public Task<UserDto?> Get(int id)
     {

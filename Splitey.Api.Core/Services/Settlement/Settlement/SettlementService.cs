@@ -9,13 +9,13 @@ using Splitey.Models.User;
 
 namespace Splitey.Core.Services.Settlement.Settlement;
 
-[ScopedDependency]
+[Scoped]
 public class SettlementService(
     AuthorizationService authorizationService,
     SettlementAccessorService settlementAccessorService,
-    SettlementRepository settlementRepository,
-    SettlementMemberRepository settlementMemberRepository,
-    TransferRepository transferRepository)
+    ISettlementRepository settlementRepository,
+    ISettlementMemberRepository settlementMemberRepository,
+    ITransferRepository transferRepository)
 {
     public Task<IEnumerable<SettlementItem>> GetList()
     {
@@ -58,6 +58,4 @@ public class SettlementService(
             transaction.Complete();
         }
     }
-    
-    
 }

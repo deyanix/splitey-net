@@ -9,12 +9,12 @@ using Splitey.Models.User.Contact;
 
 namespace Splitey.Core.Services.User.Contact;
 
-[ScopedDependency]
+[Scoped]
 public class ContactService(
     AuthorizationService authorizationService,
     ContactAccessorService contactAccessorService,
-    ContactRepository contactRepository,
-    ContactAccessRepository contactAccessRepository) 
+    IContactRepository contactRepository,
+    IContactAccessRepository contactAccessRepository) : IContactService
 {
     public async Task<IEnumerable<ContactDto>> GetList()
     {

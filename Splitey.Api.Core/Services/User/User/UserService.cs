@@ -6,9 +6,9 @@ using Splitey.Models.User.User;
 
 namespace Splitey.Core.Services.User.User;
 
-[ScopedDependency]
+[Scoped]
 public class UserService(
-    UserRepository userRepository, 
+    IUserRepository userRepository, 
     AuthorizationService authorizationService)
 {
     public Task<UserDto?> Get(int id)

@@ -6,8 +6,8 @@ using Splitey.Models.Settlement.TransferMember;
 
 namespace Splitey.Data.Repositories.Settlement.TransferMember;
 
-[SingletonDependency]
-public class TransferMemberRepository(ISqlConnectionFactory sqlConnectionFactory) : BaseRepository(sqlConnectionFactory)
+[Singleton]
+public class TransferMemberRepository(ISqlConnectionFactory sqlConnectionFactory) : BaseRepository(sqlConnectionFactory), ITransferMemberRepository
 {
     public Task<IEnumerable<TransferMemberDto>> GetList(int transferId)
     {

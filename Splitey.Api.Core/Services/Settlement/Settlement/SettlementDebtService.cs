@@ -7,11 +7,11 @@ using Splitey.Models.User;
 
 namespace Splitey.Core.Services.Settlement.Settlement;
 
-[ScopedDependency]
+[Scoped]
 public class SettlementDebtService(
-    SettlementRepository settlementRepository,
+    ISettlementRepository settlementRepository,
     SettlementAccessorService settlementAccessorService,
-    SettlementMemberRepository settlementMemberRepository)
+    ISettlementMemberRepository settlementMemberRepository)
 {
     public async Task<IList<SettlementDebtItem>> GetDebts(int settlementId)
     {

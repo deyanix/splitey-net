@@ -12,12 +12,12 @@ using Splitey.Models.User;
 
 namespace Splitey.Core.Services.Settlement.Transfer;
 
-[ScopedDependency]
+[Scoped]
 public class TransferService(
     SettlementAccessorService settlementAccessorService,
-    SettlementMemberRepository settlementMemberRepository,
-    TransferRepository transferRepository,
-    TransferMemberRepository transferMemberRepository)
+    ISettlementMemberRepository settlementMemberRepository,
+    ITransferRepository transferRepository,
+    ITransferMemberRepository transferMemberRepository)
 {
     public async Task<IEnumerable<TransferDto>> GetList(int settlementId)
     {

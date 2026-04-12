@@ -5,10 +5,10 @@ using Splitey.Models.User;
 
 namespace Splitey.Core.Services.User.Contact;
 
-[ScopedDependency]
+[Scoped]
 public class ContactAccessorService(
     AuthorizationService authorizationService,
-    ContactAccessRepository contactAccessRepository)
+    IContactAccessRepository contactAccessRepository)
 {
     public async Task<AccessMode?> GetAccessMode(int contactId)
     {

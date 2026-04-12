@@ -5,10 +5,10 @@ using Splitey.Models.User;
 
 namespace Splitey.Core.Services.Settlement.Settlement;
 
-[ScopedDependency]
+[Scoped]
 public class SettlementAccessorService(
     AuthorizationService authorizationService,
-    SettlementMemberRepository settlementMemberRepository)
+    ISettlementMemberRepository settlementMemberRepository)
 {
 public async Task<AccessMode?> GetAccessMode(int settlementId)
 {

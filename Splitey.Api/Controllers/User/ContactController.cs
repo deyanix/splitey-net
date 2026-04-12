@@ -7,7 +7,7 @@ using Splitey.Models.User.Contact;
 namespace Splitey.Api.Controllers.User;
 
 [Authorize]
-public class ContactController(ContactService contactService) : Controller
+public class ContactController(IContactService contactService) : Controller
 {
     [HttpGet("/contacts")]
     public async Task<IActionResult> GetList()

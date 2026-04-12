@@ -6,8 +6,8 @@ using Splitey.Models.User;
 
 namespace Splitey.Data.Repositories.Settlement.SettlementMember;
 
-[SingletonDependency]
-public class SettlementMemberRepository(ISqlConnectionFactory sqlConnectionFactory) : BaseRepository(sqlConnectionFactory)
+[Singleton]
+public class SettlementMemberRepository(ISqlConnectionFactory sqlConnectionFactory) : BaseRepository(sqlConnectionFactory), ISettlementMemberRepository
 {
     public Task<IEnumerable<SettlementMemberDto>> GetList(int settlementId)
     {

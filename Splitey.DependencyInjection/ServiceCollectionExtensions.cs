@@ -8,20 +8,43 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddDependencies(this IServiceCollection services, Assembly assembly)
     {
-        GetDependencies(assembly, typeof(SingletonDependencyAttribute))
-            .ForEach(item => services.AddSingleton(item));
+        var types = assembly.GetTypes()
+            .Where(t => t.IsClass && !t.IsAbstract)
+            .Select(t => new 
+            { 
+                Implementation = t, 
+                Attributes = t.GetCustomAttributes<ImplementationAttribute>(false) 
+            })
+            .Where(t => t.Attributes.Any());
         
-        GetDependencies(assembly, typeof(ScopedDependencyAttribute))
-            .ForEach(item => services.AddScoped(item));
+        foreach (var typeInfo in types)
+        {
+            foreach (var attr in typeInfo.Attributes)
+            {
+                var serviceType = attr.Type ?? GetDefaultInterface(typeInfo.Implementation);
+                var lifetime = MapLifetime(attr);
+                
+                services.Add(new ServiceDescriptor(serviceType, typeInfo.Implementation, lifetime));
+            }
+        }
 
         return services;
     }
-
-    private static List<Type> GetDependencies(Assembly assembly, Type attributeType)
+    
+    private static Type GetDefaultInterface(Type implementation)
     {
-        return assembly.GetTypes()
-            .Where(item => item.IsClass && !item.IsAbstract)
-            .Where(item => item.IsDefined(attributeType, true))
-            .ToList() ?? [];
+        var interfaces = implementation.GetInterfaces();
+        if (interfaces.Length == 0) 
+            return implementation;
+        
+        var nameMatch = interfaces.FirstOrDefault(i => i.Name == $"I{implementation.Name}");
+        return nameMatch ?? interfaces[0];
     }
+    
+    private static ServiceLifetime MapLifetime(ImplementationAttribute attr) => attr switch
+    {
+        SingletonAttribute => ServiceLifetime.Singleton,
+        ScopedAttribute => ServiceLifetime.Scoped,
+        _ => ServiceLifetime.Transient,
+    };
 }

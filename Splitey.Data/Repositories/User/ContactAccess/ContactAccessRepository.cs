@@ -6,8 +6,8 @@ using Splitey.Models.User.ContactAccess;
 
 namespace Splitey.Data.Repositories.User.ContactAccess;
 
-[SingletonDependency]
-public class ContactAccessRepository(ISqlConnectionFactory sqlConnectionFactory) : BaseRepository(sqlConnectionFactory)
+[Singleton]
+public class ContactAccessRepository(ISqlConnectionFactory sqlConnectionFactory) : BaseRepository(sqlConnectionFactory), IContactAccessRepository
 {
     public Task<IEnumerable<ContactAccessDto>> GetList(int contactId)
     {

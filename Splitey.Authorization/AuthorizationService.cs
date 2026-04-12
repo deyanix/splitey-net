@@ -7,7 +7,7 @@ using Splitey.Models.Authorization;
 
 namespace Splitey.Authorization;
 
-[ScopedDependency]
+[Scoped]
 public class AuthorizationService
 {
     private readonly IHttpContextAccessor _httpContextAccessor;

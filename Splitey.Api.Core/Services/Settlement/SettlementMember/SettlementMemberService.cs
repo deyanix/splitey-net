@@ -7,10 +7,10 @@ using Splitey.Models.User;
 
 namespace Splitey.Core.Services.Settlement.SettlementMember;
 
-[ScopedDependency]
+[Scoped]
 public class SettlementMemberService(
     SettlementAccessorService settlementAccessorService,
-    SettlementMemberRepository settlementMemberRepository) 
+    ISettlementMemberRepository settlementMemberRepository) 
 {
     public async Task<IEnumerable<SettlementMemberDto>> GetList(int settlementId)
     {

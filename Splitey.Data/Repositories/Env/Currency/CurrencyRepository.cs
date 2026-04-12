@@ -5,8 +5,8 @@ using Splitey.Models.Env;
 
 namespace Splitey.Data.Repositories.Env.Currency;
 
-[SingletonDependency]
-public class CurrencyRepository(ISqlConnectionFactory sqlConnectionFactory) : BaseRepository(sqlConnectionFactory)
+[Singleton]
+public class CurrencyRepository(ISqlConnectionFactory sqlConnectionFactory) : BaseRepository(sqlConnectionFactory), ICurrencyRepository
 {
     public Task<IEnumerable<CurrencyDto>> GetList()
     {
